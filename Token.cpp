@@ -51,8 +51,69 @@ Token::print(ostream& os) const
  *                                                    *
  *     **** YOU MUST CODE THIS !!!!!! ****            *
  ******************************************************/
-void Token::get(istream &is)
-{
-  // you must write this code !!!!
+void Token::get(istream &is){
+  static int lineNum = 1; // Tracks the current line number
+    _value.clear();
+    _type = ERROR;
+
+    char ch;
+    // Skip whitespace and comments
+    while (is.get(ch)) {
+        if (ch == '\n') {
+            lineNum++;
+        } else if (isspace(ch)) {
+            continue; // Ignore whitespace
+        } else if (ch == '#') {
+            // Skip to the end of the line for comments
+            while (is.get(ch) && ch != '\n');
+            if (ch == '\n') lineNum++;
+        } else {
+            is.unget(); // Put back the non-whitespace, non-comment character
+            break;
+        }
+    }
+
+    if (!is) {
+        _type = EOF_TOK;
+        _line_num = lineNum;
+        return;
+    }
+
+
+  static int DFA[20][256]; 
+  static bool initialized = false;
+  
+
+  if(!initialized){
+    for (int i = 0; i < 20; i++){
+      for (int j = 0; j < 256; j++){
+        DFA[i][j] = ERROR;
+      }
+    }
+
+        // Populate DFA based on the automaton
+        for (char c = '0'; c <= '9'; c++) DFA[0][c] = 2;
+        for (char c = 'a'; c <= 'z'; c++) DFA[0][c] = 1;
+        for (char c = 'A'; c <= 'Z'; c++) DFA[0][c] = 1;
+        DFA[0]['+'] = 5;
+        DFA[0]['-'] = 5;
+        DFA[0]['*'] = 6;
+        DFA[0]['/'] = 6;
+        DFA[0]['<'] = 7;
+        DFA[0]['>'] = 7;
+        DFA[0]['='] = 9;
+        DFA[0]['('] = 10;
+        DFA[0][')'] = 11;
+        DFA[0]['&'] = 12;//another &? 13
+        DFA[0]['|'] = 14;//another |? 15
+        DFA[0][';'] = 16;
+        DFA[0]['['] = 17;
+        DFA[0][']'] = 18;
+        DFA[0][','] = 19;
+
+
+
+
+  }
 
 }
