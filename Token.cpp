@@ -58,29 +58,20 @@ void Token::get(istream &is){
 
     char ch;
     // Skip whitespace and comments
-    while (is.get(ch)) {
+        while (is.get(ch)) {
         if (ch == '\n') {
-            lineNum++;
-        } else if (isspace(ch)) {
-            continue; // Ignore whitespace
-        } else if (ch == '#') {
-            // Skip to the end of the line for comments
-            while (is.get(ch) && ch != '\n');
-            if (ch == '\n') lineNum++;
-        } else {
-            is.unget(); // Put back the non-whitespace, non-comment character
-            break;
+            ++_line_num;
         }
+        if (!isspace(ch)) break; // Break on the first non-whitespace character
     }
 
     if (!is) {
         _type = EOF_TOK;
-        _line_num = lineNum;
         return;
     }
 
 
-  static int DFA[20][256]; 
+  static unsigned int DFA[20][256]; 
   static bool initialized = false;
   
 
@@ -92,24 +83,27 @@ void Token::get(istream &is){
     }
 
         // Populate DFA based on the automaton
-        for (char c = '0'; c <= '9'; c++) DFA[0][c] = 2;
-        for (char c = 'a'; c <= 'z'; c++) DFA[0][c] = 1;
-        for (char c = 'A'; c <= 'Z'; c++) DFA[0][c] = 1;
-        DFA[0]['+'] = 5;
-        DFA[0]['-'] = 5;
-        DFA[0]['*'] = 6;
-        DFA[0]['/'] = 6;
-        DFA[0]['<'] = 7;
-        DFA[0]['>'] = 7;
-        DFA[0]['='] = 9;
-        DFA[0]['('] = 10;
-        DFA[0][')'] = 11;
-        DFA[0]['&'] = 12;//another &? 13
-        DFA[0]['|'] = 14;//another |? 15
-        DFA[0][';'] = 16;
-        DFA[0]['['] = 17;
-        DFA[0][']'] = 18;
-        DFA[0][','] = 19;
+        for (char c = '0'; c <= '9'; c++) DFA[0][(unsigned int)c] = 2;
+        for (char c = 'a'; c <= 'z'; c++) DFA[0][(unsigned int)c] = 1;
+        for (char c = 'A'; c <= 'Z'; c++) DFA[0][(unsigned int)c] = 1;
+        DFA[0][(unsigned int)'+'] = 5;
+        DFA[0][(unsigned int)'-'] = 5;
+        DFA[0][(unsigned int)'*'] = 6;
+        DFA[0][(unsigned int)'/'] = 6;
+        DFA[0][(unsigned int)'<'] = 7;
+        DFA[0][(unsigned int)'>'] = 7;
+        DFA[0][(unsigned int)'='] = 9;
+        DFA[0][(unsigned int)'('] = 10;
+        DFA[0][(unsigned int)')'] = 11;
+        DFA[0][(unsigned int)'&'] = 12;//another &? 13
+        DFA[0][(unsigned int)'|'] = 14;//another |? 15
+        DFA[0][(unsigned int)';'] = 16;
+        DFA[0][(unsigned int)'['] = 17;
+        DFA[0][(unsigned int)']'] = 18;
+        DFA[0][(unsigned int)','] = 19;
+
+        //state 1 transitions
+
 
 
 
