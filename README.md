@@ -1,12 +1,61 @@
-# Computer-Systems-2-project-1
-Author: Tyler Ward #
-Platform: Mac #
-Compile: use the make file ex: make  #
-Run: To run you have to have a file you want to be parced. for example ./test.myl#
-Bugs: None that I'm aware of #
-Overview:Basically what we did in class. I created an array just like in class and created the DFA fazes. Printing was fairly easy becasue it was almost done for us. I used a switch case to define the final states. #
-Software engineering log: #
-Day 1: created DFA array. # 
-Day 2: Fixed bugs with DFA array#
-Day 3: Tried to figure out printing using switch case#
-Day 4: 
+# Computer Systems 2 - Project 1
+
+**Author:** Tyler Ward  
+**Platform:** Mac  
+**Compile:** Use the Makefile (e.g., `make`)  
+**Run:** To run, provide a file to be parsed (e.g., `./tokenify test.myl`)  
+
+---
+
+## Bugs
+None that I'm aware of.
+
+---
+
+## Overview
+This project involved building a lexical analyzer for a programming language. The implementation follows the automaton provided in the project outline. Here's a breakdown of the approach:
+
+1. **DFA Array:**  
+   I created a DFA (Deterministic Finite Automaton) array to handle transitions between states based on input characters. This array was initialized to map characters to their corresponding states.
+
+2. **Tokenization:**  
+   The DFA processes input characters and identifies tokens based on the final state reached. Keywords, identifiers, numbers, and operators are all handled by the DFA.
+
+3. **Printing Tokens:**  
+   The `Token` class provided most of the functionality for printing tokens. I used a `switch` statement to assign token types based on the final state of the DFA.
+
+---
+
+## Software Engineering Log
+
+### Day 1
+- Created the DFA array and initialized it with transitions based on the automaton provided in the project outline.
+
+### Day 2
+- Fixed bugs in the DFA array, ensuring that all transitions were correctly mapped.
+
+### Day 3
+- Worked on implementing the `switch` statement to assign token types based on the final state of the DFA.
+- Debugged issues with token printing.
+
+### Day 4
+- Finalized the implementation and tested the program with various input files to ensure correctness.
+- Cleaned up the code and added comments for clarity.
+
+---
+
+## Notes
+- The project closely follows the structure and requirements outlined in the assignment.
+- The DFA implementation ensures that all tokens are correctly identified and categorized.
+- The program handles comments and whitespace appropriately, skipping them during tokenization.
+
+---
+
+## How to Use
+1. **Compile:**  
+   Run `make` to compile the program.
+
+2. **Run:**  
+   Execute the program with an input file:  
+   ```bash
+   ./tokenify <input_file>
