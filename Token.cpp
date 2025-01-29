@@ -53,37 +53,40 @@ Token::print(ostream& os) const
  ******************************************************/
 void Token::get(istream &is){
   static int lineNum = 1; // Tracks the current line number
-    _value.clear();
-    _type = ERROR;
+  _value.clear();
+  _type = ERROR;
+  char ch;
 
-    char ch;
     // Skip whitespace and comments
-        while (is.get(ch)) {
-        if (ch == '\n') {
-            _line_num++;
-        }else if(ch == '#'){
-          while (is.get(ch) && ch!='\n'){
-            //do nothing
-          }
-          if (ch =='\n'){
-            lineNum++;
-          }
-        }else if (!isspace(ch)){
-          break; // Break on the first non-whitespace character
-        }  
+  while(is.get(ch)){
+    if(ch=='\n'){
+      lineNum++;
+
+      }else if(ch == '#'){
+      while (is.get(ch)){
+        if (ch=='\n'){
+          lineNum++;
+          break;
+        }
+      }
+    }else if(!isspace(ch)){
+      break;
     }
-
-    if (!is) {
-        _type = EOF_TOK;
-        return;
     }
+  //Problem fix??
+  _line_num = lineNum;
 
+  if (!is) {
+      _type = EOF_TOK;
+      return;
+  }
 
+  //initialize DFA once
   static unsigned int DFA[20][256]; 
   static bool initialized = false;
-  
 
   if(!initialized){
+    //initialize all states to ERROR
     for (int i = 0; i < 20; i++){
       for (int j = 0; j < 256; j++){
         DFA[i][j] = ERROR;
@@ -103,41 +106,46 @@ void Token::get(istream &is){
         DFA[0][(unsigned int)'='] = 9;
         DFA[0][(unsigned int)'('] = 10;
         DFA[0][(unsigned int)')'] = 11;
-        DFA[0][(unsigned int)'&'] = 12;//another &? 13
-        DFA[0][(unsigned int)'|'] = 14;//another |? 15
+        DFA[0][(unsigned int)'&'] = 12;
+        DFA[0][(unsigned int)'|'] = 14;
         DFA[0][(unsigned int)';'] = 16;
         DFA[0][(unsigned int)'['] = 17;
         DFA[0][(unsigned int)']'] = 18;
         DFA[0][(unsigned int)','] = 19;
-        // state 1 transitions
+        // state 1 transitions (ID)
         for (char c = 'a'; c<= 'z'; c++) DFA[1][(unsigned int)c]=1;
         for (char c = 'A'; c<= 'Z'; c++) DFA[1][(unsigned int)c]=1;
         for (char c = '0'; c<= '9'; c++) DFA[1][(unsigned int)c]=1;
-        //state 2 transitions
+
+        //state 2 transitions(INT)
         for (char c = '0'; c <= '9'; c++) DFA[2][(unsigned int)c] = 2;
         DFA[2][(unsigned int)'.'] = 3;
-        //state 3 transitions 
+        //state 3 transitions (After decimal)
         for (char c = '0'; c <= '9'; c++) DFA[3][(unsigned int)c] = 4;
-        //state 4 transitions
+        //state 4 transitions (REAL)
         for (char c = '0'; c <= '9'; c++) DFA[4][(unsigned int)c] = 4;
-        //state 7
+        
+        //state 7 (< or >)
         DFA[7][(unsigned int)'='] = 8;
-        //state 9
+        //state 9 (=)
         DFA[9][(unsigned int)'='] = 8;
-        //state 12
+        //state 12 (&)
         DFA[12][(unsigned int)'&'] = 13;
-        //state 14
+        //state 14(|)
         DFA[14][(unsigned int)'|'] =15;
 
         initialized = true;
   }
 
-  unsigned int state =0;
-  _line_num = lineNum;
+  unsigned int state = 0;
+  //is.get(ch); //read the first char after whitespace
 
   do{
     unsigned int nextState = DFA[state][(unsigned int) ch];
-    if (nextState == ERROR) break;
+    if (nextState == ERROR){
+      is.putback(ch);
+      break;
+    }
 
     state = nextState;
     _value +=ch;
@@ -152,16 +160,13 @@ void Token::get(istream &is){
       // Determine the token type based on the final state
     switch (state) {
         case 1:  // ID or Keyword
-            if (_value == "int") _type = INTEGER;
-            else if (_value == "float") _type = FLOAT;
-            else if (_value == "while") _type = WHILE;
-            else if (_value == "if") _type = IF;
-            else if (_value == "then") _type = THEN;
-            else if (_value == "else") _type = ELSE;
-            else if (_value == "void") _type = VOID;
-            else if (_value == "begin") _type = BEGIN;
-            else if (_value == "end") _type = END;
-            else _type = ID;
+            _type = ID; // Assume it's an ID by default
+            for (int i = 0; i < sizeof(reserved) / sizeof(reserved[0]); i++) {
+                if (_value == reserved[i]) {
+                    _type = static_cast<TokenType>(INTEGER + i); // Map to corresponding keyword type
+                    break;
+                }
+            }
             break;
         case 2:
             _type = NUM_INT;
@@ -211,3 +216,5 @@ void Token::get(istream &is){
             break;
     }
 }
+//&& is giving syntax error 
+//line numbers arent counting correctly 

@@ -8,7 +8,7 @@
 ---
 
 ## Bugs
-None that I'm aware of.
+line numbers are incorrect. 
 
 ---
 
@@ -41,6 +41,9 @@ This project involved building a lexical analyzer for a programming language. Th
 ### Day 4
 - Finalized the implementation and tested the program with various input files to ensure correctness.
 - Cleaned up the code and added comments for clarity.
+### Day 5
+- Realized that I am having major issues with my output because it doesn't recognize && or single character tokens.
+- To fix this I found out that my only issue is the fact that I didn't putback ch if the next state is error. 
 
 ---
 
