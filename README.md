@@ -8,7 +8,7 @@
 ---
 
 ## Bugs
-line numbers are incorrect. 
+None that I am aware of.
 
 ---
 

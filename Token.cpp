@@ -1,7 +1,7 @@
 /*******************************************
  * File: Token.cpp                         *
- * Author: S. Blythe                       *
- * Date: 12/2024                           *
+ * Author: Tyler Ward                      *
+ * Date: 01/28/2025                        *
  * PURPOSE: implementation for Token       *
  *******************************************/
 
@@ -30,6 +30,7 @@ static string reserved[]={"int" , "float", "while", "if", "then", "else", "void"
  *                                                    *
  *   returns: the updated stream                      *
  ******************************************************/
+
 ostream&
 Token::print(ostream& os) const
 {
@@ -41,23 +42,13 @@ Token::print(ostream& os) const
   return os;
 }
 
-/******************************************************
- *  Fills in information about this Token by reading  *
- *    it from specified input stream                  *
- *                                                    *
- *   is  - the stream to read the Token from          *
- *                                                    *
- *   returns: nothing                                 *
- *                                                    *
- *     **** YOU MUST CODE THIS !!!!!! ****            *
- ******************************************************/
 void Token::get(istream &is){
   static int lineNum = 1; // Tracks the current line number
   _value.clear();
   _type = ERROR;
   char ch;
 
-    // Skip whitespace and comments
+  // Skip whitespace and comments
   while(is.get(ch)){
     if(ch=='\n'){
       lineNum++;
@@ -73,7 +64,7 @@ void Token::get(istream &is){
       break;
     }
     }
-  //Problem fix??
+
   _line_num = lineNum;
 
   if (!is) {
@@ -138,7 +129,7 @@ void Token::get(istream &is){
   }
 
   unsigned int state = 0;
-  //is.get(ch); //read the first char after whitespace
+  
 
   do{
     unsigned int nextState = DFA[state][(unsigned int) ch];
@@ -151,13 +142,12 @@ void Token::get(istream &is){
     _value +=ch;
 
     //check if we can fetch the next char
-
     if(!is.get(ch)) break;
-    if (ch=='\n') lineNum++;
+  
 
   } while(true);
 
-      // Determine the token type based on the final state
+    // Determine the token type based on the final state
     switch (state) {
         case 1:  // ID or Keyword
             _type = ID; // Assume it's an ID by default
@@ -216,5 +206,3 @@ void Token::get(istream &is){
             break;
     }
 }
-//&& is giving syntax error 
-//line numbers arent counting correctly 
